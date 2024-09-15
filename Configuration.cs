@@ -1,6 +1,8 @@
 using System.Runtime.Versioning;
+using System.Text.RegularExpressions;
 using Microsoft.Win32;
-class Configuration
+
+class InstallUtils
 {
     /* Get the install path of the specified application.
      * 
@@ -23,8 +25,25 @@ class Configuration
                         return subkey.GetValue("InstallLocation") as string;
                     }
                 }
+                subkey?.Close();
             }
         }
+        key?.Close();
+
         return string.Empty;
+    }
+
+    /* Get the install path of the specified application.
+     * 
+     * appName: The name of the application.
+     * 
+     * Returns: The install path of the application if found; otherwise, null.
+     */
+    public static string[] GetFilesFromRegex(string directory, string regex) {
+        if(!Directory.Exists(directory)) { return Array.Empty<string>(); }
+        
+        var files = Directory.GetFiles(directory, regex, SearchOption.AllDirectories);
+
+        return files;
     }
 }
