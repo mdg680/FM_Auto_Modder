@@ -1,30 +1,30 @@
+using System.Runtime.Versioning;
 using Microsoft.Win32;
-
 class Configuration
 {
-    public static string GetInstallPath(string appName)
-    {
+    /* Get the install path of the specified application.
+     * 
+     * appName: The name of the application.
+     * 
+     * Returns: The install path of the application if found; otherwise, null.
+     */
+    [SupportedOSPlatform("windows")]
+    public static string? GetInstallPath(string appName) {
         string registryKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall";
-        using (RegistryKey key = Registry.LocalMachine.OpenSubKey(registryKey))
-        {
-            if (key != null)
-            {
-                foreach (string subkeyName in key.GetSubKeyNames())
-                {
-                    using (RegistryKey subkey = key.OpenSubKey(subkeyName))
-                    {
-                        if (subkey != null)
-                        {
-                            string displayName = subkey.GetValue("DisplayName") as string;
-                            if (!string.IsNullOrEmpty(displayName) && displayName.Contains(appName))
-                            {
-                                return subkey.GetValue("InstallLocation") as string;
-                            }
-                        }
+        RegistryKey? key = Registry.LocalMachine.OpenSubKey(registryKey);
+        
+        if (key != null) {
+            foreach (string subkeyName in key.GetSubKeyNames()) {
+                RegistryKey? subkey = key.OpenSubKey(subkeyName);
+                
+                if (subkey != null) {
+                    string? displayName = subkey.GetValue("DisplayName") as string;
+                    if (!string.IsNullOrEmpty(displayName) && displayName.Contains(appName)) {
+                        return subkey.GetValue("InstallLocation") as string;
                     }
                 }
             }
         }
-        return null;
+        return string.Empty;
     }
 }

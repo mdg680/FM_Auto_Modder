@@ -1,14 +1,12 @@
-﻿using System;
-using System.Xml.Serialization;
-using Microsoft.Win32;
-using static Configuration;
+﻿using System.Runtime.Versioning;
 
 class Program
 {
+    [SupportedOSPlatform("windows")]
     static void Main()
     {
         string appName = "Football Manager 2024";
-        string installPath = Configuration.GetInstallPath(appName);
+        string? installPath = Configuration.GetInstallPath(appName);
 
         if (!string.IsNullOrEmpty(installPath))
         {
